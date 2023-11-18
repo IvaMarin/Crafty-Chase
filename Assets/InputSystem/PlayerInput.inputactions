@@ -1,5 +1,5 @@
 {
-    "name": "Controls",
+    "name": "PlayerInput",
     "maps": [
         {
             "name": "Player",
@@ -72,6 +72,15 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "412dc79e-dfb4-42f6-80ff-e63406a91e79",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Zoom",
+                    "type": "Button",
+                    "id": "b983361d-4e43-41c1-a564-a07b3a267e69",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Hold",
@@ -340,6 +349,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e65320a1-594a-4d24-944d-e23058937962",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "50a2b418-e8cf-474f-b530-db1ca34be931",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Zoom",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

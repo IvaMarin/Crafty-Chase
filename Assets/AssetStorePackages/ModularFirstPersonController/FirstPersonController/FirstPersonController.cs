@@ -54,6 +54,8 @@ public class FirstPersonController : MonoBehaviour
 
     // Internal Variables
     private bool isWalking = false;
+    private float normalWalkSpeed;
+    private float crouchSpeed;
 
     #region Sprint
 
@@ -135,6 +137,8 @@ public class FirstPersonController : MonoBehaviour
         // Set internal variables
         playerCamera.fieldOfView = fov;
         originalScale = transform.localScale;
+        normalWalkSpeed = walkSpeed;
+        crouchSpeed = normalWalkSpeed / speedReduction;
         jointOriginalPos = joint.localPosition;
 
         if (!unlimitedSprint)
@@ -341,18 +345,12 @@ public class FirstPersonController : MonoBehaviour
         {
             if (Input.GetKeyDown(crouchKey) && !holdToCrouch)
             {
-                Crouch();
+                ChangeCrouch(!isCrouched);
             }
 
-            if (Input.GetKeyDown(crouchKey) && holdToCrouch)
+            if (holdToCrouch)
             {
-                isCrouched = false;
-                Crouch();
-            }
-            else if (Input.GetKeyUp(crouchKey) && holdToCrouch)
-            {
-                isCrouched = true;
-                Crouch();
+                ChangeCrouch(Input.GetKey(crouchKey));
             }
         }
 
@@ -404,10 +402,7 @@ public class FirstPersonController : MonoBehaviour
                 {
                     isSprinting = true;
 
-                    if (isCrouched)
-                    {
-                        Crouch();
-                    }
+                    ChangeCrouch(false);
 
                     if (hideBarWhenFull && !unlimitedSprint)
                     {
@@ -443,16 +438,16 @@ public class FirstPersonController : MonoBehaviour
         #endregion
     }
 
-    // Sets isGrounded based on a raycast sent straigth down from the player object
+    // Sets isGrounded based on a spherecast sent straigth down from the player object
     private void CheckGround()
     {
         Vector3 origin = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * .5f), transform.position.z);
-        Vector3 direction = transform.TransformDirection(Vector3.down);
-        float distance = .75f;
+        Vector3 direction = transform.TransformDirection(Vector3.down) * 0.02f;
+        float radius = 0.49f;
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, distance))
+        if (Physics.SphereCast(origin, radius, direction, out RaycastHit hit))
         {
-            Debug.DrawRay(origin, direction * distance, Color.red);
+            Debug.DrawRay(origin, direction, Color.red);
             isGrounded = true;
         }
         else
@@ -470,30 +465,38 @@ public class FirstPersonController : MonoBehaviour
             isGrounded = false;
         }
 
-        // When crouched and using toggle system, will uncrouch for a jump
-        if (isCrouched && !holdToCrouch)
-        {
-            Crouch();
-        }
+        ChangeCrouch(false);
     }
 
-    private void Crouch()
+    private bool CheckCeiling()
+    {
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y + (transform.localScale.y * .5f), transform.position.z);
+        Vector3 direction = transform.TransformDirection(Vector3.up) * 0.02f;
+        float radius = 0.49f;
+        return Physics.SphereCast(origin, radius, direction, out RaycastHit hit);
+    }
+
+    // try to stand up or sit down
+    private void ChangeCrouch(bool newValue)
     {
         // Stands player up to full height
         // Brings walkSpeed back up to original speed
-        if (isCrouched)
+        if (!newValue)
         {
-            transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
-            walkSpeed /= speedReduction;
+            if (!CheckCeiling())
+            {
+                transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
+                walkSpeed = crouchSpeed;
 
-            isCrouched = false;
+                isCrouched = false;
+            }
         }
         // Crouches player down to set height
         // Reduces walkSpeed
         else
         {
             transform.localScale = new Vector3(originalScale.x, crouchHeight, originalScale.z);
-            walkSpeed *= speedReduction;
+            walkSpeed = normalWalkSpeed;
 
             isCrouched = true;
         }

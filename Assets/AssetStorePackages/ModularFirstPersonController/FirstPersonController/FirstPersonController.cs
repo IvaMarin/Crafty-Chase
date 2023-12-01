@@ -441,11 +441,12 @@ public class FirstPersonController : MonoBehaviour
     // Sets isGrounded based on a spherecast sent straigth down from the player object
     private void CheckGround()
     {
-        Vector3 origin = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * .5f), transform.position.z);
-        Vector3 direction = transform.TransformDirection(Vector3.down) * 0.02f;
-        float radius = 0.49f;
-
-        if (Physics.SphereCast(origin, radius, direction, out RaycastHit hit))
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y - transform.localScale.y * 0.5f, transform.position.z);
+        Vector3 direction = transform.TransformDirection(Vector3.down);
+        float radius = 0.47f * transform.localScale.y;
+        float distance = 0.1f;
+        
+        if (Physics.SphereCast(origin, radius, direction, out RaycastHit hit, distance))
         {
             Debug.DrawRay(origin, direction, Color.red);
             isGrounded = true;

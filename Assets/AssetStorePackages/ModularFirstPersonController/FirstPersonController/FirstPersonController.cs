@@ -452,9 +452,9 @@ public class FirstPersonController : MonoBehaviour
 
     private bool CheckCeiling()
     {
-        Vector3 origin = new Vector3(transform.position.x, transform.position.y + (transform.localScale.y * .5f), transform.position.z);
-        Vector3 direction = transform.TransformDirection(Vector3.up) * 0.1f;
-        float radius = 0.45f * transform.localScale.y;
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y + transform.localScale.y - 0.5f, transform.position.z);
+        Vector3 direction = transform.TransformDirection(Vector3.up) * 0.05f;
+        float radius = 0.49f;
         return Physics.SphereCast(origin, radius, direction, out RaycastHit hit);
     }
 

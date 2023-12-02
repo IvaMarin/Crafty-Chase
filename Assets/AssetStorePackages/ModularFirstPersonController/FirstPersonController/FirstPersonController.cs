@@ -375,7 +375,7 @@ public class FirstPersonController : MonoBehaviour
 
             // Will allow head bob
             isWalking = (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded);
-            isSprinting = enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown;
+            isSprinting = enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown && ChangeCrouch(false);
 
             float targetSpeed = walkSpeed;
             if (isSprinting)
@@ -452,15 +452,20 @@ public class FirstPersonController : MonoBehaviour
 
     private bool CheckCeiling()
     {
-        Vector3 origin = new Vector3(transform.position.x, transform.position.y + transform.localScale.y - 0.5f, transform.position.z);
-        Vector3 direction = transform.TransformDirection(Vector3.up) * 0.05f;
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        Vector3 direction = transform.TransformDirection(Vector3.up);
         float radius = 0.49f;
-        return Physics.SphereCast(origin, radius, direction, out RaycastHit hit);
+        float distance = 1.5f - transform.localScale.y;
+        return Physics.SphereCast(origin, radius, direction, out RaycastHit hit, distance);
     }
 
     // try to stand up or sit down
-    private void ChangeCrouch(bool newValue)
+    // returns whether the state was changed successfully
+    private bool ChangeCrouch(bool newValue)
     {
+        // if it's already as it should be then it's obviously success
+        bool success = (isCrouched == newValue);
+
         // Stands player up to full height
         // Brings walkSpeed back up to original speed
         if (!newValue)
@@ -471,17 +476,24 @@ public class FirstPersonController : MonoBehaviour
                 walkSpeed = normalWalkSpeed;
 
                 isCrouched = false;
+                success = true;
             }
         }
         // Crouches player down to set height
         // Reduces walkSpeed
         else
         {
-            transform.localScale = new Vector3(originalScale.x, crouchHeight, originalScale.z);
+            // Sometimes the character is shorter than its crouchHeight.
+            // It can happen after sliding, for example.
+            float newHeight = Mathf.Min(crouchHeight, transform.localScale.y);
+            transform.localScale = new Vector3(originalScale.x, newHeight, originalScale.z);
             walkSpeed = crouchSpeed;
 
             isCrouched = true;
+            success = true;
         }
+
+        return success;
     }
 
     private void HeadBob()

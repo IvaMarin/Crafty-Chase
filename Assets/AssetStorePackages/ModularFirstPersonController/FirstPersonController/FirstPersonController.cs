@@ -138,7 +138,7 @@ public class FirstPersonController : MonoBehaviour
         playerCamera.fieldOfView = fov;
         originalScale = transform.localScale;
         normalWalkSpeed = walkSpeed;
-        crouchSpeed = normalWalkSpeed / speedReduction;
+        crouchSpeed = normalWalkSpeed * speedReduction;
         jointOriginalPos = joint.localPosition;
 
         if (!unlimitedSprint)
@@ -373,35 +373,34 @@ public class FirstPersonController : MonoBehaviour
             // Calculate how fast we should be moving
             Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-            // Checks if player is walking and isGrounded
             // Will allow head bob
-            if (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded)
+            isWalking = (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded);
+            isSprinting = enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown;
+
+            float targetSpeed = walkSpeed;
+            if (isSprinting)
             {
-                isWalking = true;
+                targetSpeed = sprintSpeed;
             }
-            else
-            {
-                isWalking = false;
-            }
+
+            targetVelocity = transform.TransformDirection(targetVelocity) * targetSpeed;
+
+            // Apply a force that attempts to reach our target velocity
+            Vector3 velocity = rb.velocity;
+            Vector3 velocityChange = (targetVelocity - velocity);
+            velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
+            velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
+            velocityChange.y = 0;
+
+            rb.AddForce(velocityChange, ForceMode.VelocityChange);
 
             // All movement calculations while sprint is active
-            if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
+            if (isSprinting)
             {
-                targetVelocity = transform.TransformDirection(targetVelocity) * sprintSpeed;
-
-                // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.velocity;
-                Vector3 velocityChange = (targetVelocity - velocity);
-                velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-                velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                velocityChange.y = 0;
-
                 // Player is only moving when valocity change != 0
                 // Makes sure fov change only happens during movement
                 if (velocityChange.x != 0 || velocityChange.z != 0)
                 {
-                    isSprinting = true;
-
                     ChangeCrouch(false);
 
                     if (hideBarWhenFull && !unlimitedSprint)
@@ -409,29 +408,11 @@ public class FirstPersonController : MonoBehaviour
                         sprintBarCG.alpha += 5 * Time.deltaTime;
                     }
                 }
-
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
             }
             // All movement calculations while walking
-            else
+            else if (hideBarWhenFull && sprintRemaining == sprintDuration)
             {
-                isSprinting = false;
-
-                if (hideBarWhenFull && sprintRemaining == sprintDuration)
-                {
-                    sprintBarCG.alpha -= 3 * Time.deltaTime;
-                }
-
-                targetVelocity = transform.TransformDirection(targetVelocity) * walkSpeed;
-
-                // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.velocity;
-                Vector3 velocityChange = (targetVelocity - velocity);
-                velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-                velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                velocityChange.y = 0;
-
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
+                sprintBarCG.alpha -= 3 * Time.deltaTime;
             }
         }
 
@@ -466,7 +447,7 @@ public class FirstPersonController : MonoBehaviour
             isGrounded = false;
         }
 
-        ChangeCrouch(false);
+        ChangeCrouch(false);  // delete this line and instead vary jumpPower?
     }
 
     private bool CheckCeiling()
@@ -487,7 +468,7 @@ public class FirstPersonController : MonoBehaviour
             if (!CheckCeiling())
             {
                 transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
-                walkSpeed = crouchSpeed;
+                walkSpeed = normalWalkSpeed;
 
                 isCrouched = false;
             }
@@ -497,7 +478,7 @@ public class FirstPersonController : MonoBehaviour
         else
         {
             transform.localScale = new Vector3(originalScale.x, crouchHeight, originalScale.z);
-            walkSpeed = normalWalkSpeed;
+            walkSpeed = crouchSpeed;
 
             isCrouched = true;
         }

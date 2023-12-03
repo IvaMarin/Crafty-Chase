@@ -55,6 +55,8 @@ public class FirstPersonController : MonoBehaviour
 
     // Internal Variables
     private bool isWalking = false;
+    private float normalWalkSpeed;
+    private float crouchSpeed;
 
     #region Sprint
 
@@ -136,6 +138,8 @@ public class FirstPersonController : MonoBehaviour
         // Set internal variables
         playerCamera.fieldOfView = fov;
         originalScale = transform.localScale;
+        normalWalkSpeed = walkSpeed;
+        crouchSpeed = normalWalkSpeed * speedReduction;
         jointOriginalPos = joint.localPosition;
 
         if (!unlimitedSprint)
@@ -342,18 +346,12 @@ public class FirstPersonController : MonoBehaviour
         {
             if (Input.GetKeyDown(crouchKey) && !holdToCrouch)
             {
-                Crouch();
+                ChangeCrouch(!isCrouched);
             }
 
-            if (Input.GetKeyDown(crouchKey) && holdToCrouch)
+            if (holdToCrouch)
             {
-                isCrouched = false;
-                Crouch();
-            }
-            else if (Input.GetKeyUp(crouchKey) && holdToCrouch)
-            {
-                isCrouched = true;
-                Crouch();
+                ChangeCrouch(Input.GetKey(crouchKey));
             }
         }
 
@@ -376,84 +374,63 @@ public class FirstPersonController : MonoBehaviour
             // Calculate how fast we should be moving
             Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-            // Checks if player is walking and isGrounded
             // Will allow head bob
-            if (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded)
+            isWalking = (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded);
+            isSprinting = enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown && ChangeCrouch(false);
+
+            float targetSpeed = walkSpeed;
+            if (isSprinting)
             {
-                isWalking = true;
+                targetSpeed = sprintSpeed;
             }
-            else
-            {
-                isWalking = false;
-            }
+
+            targetVelocity = transform.TransformDirection(targetVelocity) * targetSpeed;
+
+            // Apply a force that attempts to reach our target velocity
+            Vector3 velocity = rb.velocity;
+            Vector3 velocityChange = (targetVelocity - velocity);
+            velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
+            velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
+            velocityChange.y = 0;
+
+            rb.AddForce(velocityChange, ForceMode.VelocityChange);
 
             // All movement calculations while sprint is active
-            if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
+            if (isSprinting)
             {
-                targetVelocity = transform.TransformDirection(targetVelocity) * sprintSpeed;
-
-                // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.velocity;
-                Vector3 velocityChange = (targetVelocity - velocity);
-                velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-                velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                velocityChange.y = 0;
-
                 // Player is only moving when valocity change != 0
                 // Makes sure fov change only happens during movement
                 if (velocityChange.x != 0 || velocityChange.z != 0)
                 {
-                    isSprinting = true;
-
-                    if (isCrouched)
-                    {
-                        Crouch();
-                    }
+                    ChangeCrouch(false);
 
                     if (hideBarWhenFull && !unlimitedSprint)
                     {
                         sprintBarCG.alpha += 5 * Time.deltaTime;
                     }
                 }
-
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
             }
             // All movement calculations while walking
-            else
+            else if (hideBarWhenFull && sprintRemaining == sprintDuration)
             {
-                isSprinting = false;
-
-                if (hideBarWhenFull && sprintRemaining == sprintDuration)
-                {
-                    sprintBarCG.alpha -= 3 * Time.deltaTime;
-                }
-
-                targetVelocity = transform.TransformDirection(targetVelocity) * walkSpeed;
-
-                // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.velocity;
-                Vector3 velocityChange = (targetVelocity - velocity);
-                velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-                velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                velocityChange.y = 0;
-
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
+                sprintBarCG.alpha -= 3 * Time.deltaTime;
             }
         }
 
         #endregion
     }
 
-    // Sets isGrounded based on a raycast sent straigth down from the player object
+    // Sets isGrounded based on a spherecast sent straigth down from the player object
     private void CheckGround()
     {
-        Vector3 origin = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * .5f), transform.position.z);
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y - transform.localScale.y * 0.5f, transform.position.z);
         Vector3 direction = transform.TransformDirection(Vector3.down);
-        float distance = .75f;
-
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, distance))
+        float radius = 0.47f * transform.localScale.y;
+        float distance = 0.1f;
+        
+        if (Physics.SphereCast(origin, radius, direction, out RaycastHit hit, distance))
         {
-            Debug.DrawRay(origin, direction * distance, Color.red);
+            Debug.DrawRay(origin, direction, Color.red);
             isGrounded = true;
         }
         else
@@ -471,33 +448,53 @@ public class FirstPersonController : MonoBehaviour
             isGrounded = false;
         }
 
-        // When crouched and using toggle system, will uncrouch for a jump
-        if (isCrouched && !holdToCrouch)
-        {
-            Crouch();
-        }
+        ChangeCrouch(false);  // delete this line and instead vary jumpPower?
     }
 
-    private void Crouch()
+    private bool CheckCeiling()
     {
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        Vector3 direction = transform.TransformDirection(Vector3.up);
+        float radius = 0.49f;
+        float distance = 1.5f - transform.localScale.y;
+        return Physics.SphereCast(origin, radius, direction, out RaycastHit hit, distance);
+    }
+
+    // try to stand up or sit down
+    // returns whether the state was changed successfully
+    private bool ChangeCrouch(bool newValue)
+    {
+        // if it's already as it should be then it's obviously success
+        bool success = (isCrouched == newValue);
+
         // Stands player up to full height
         // Brings walkSpeed back up to original speed
-        if (isCrouched)
+        if (!newValue)
         {
-            transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
-            walkSpeed /= speedReduction;
+            if (!CheckCeiling())
+            {
+                transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
+                walkSpeed = normalWalkSpeed;
 
-            isCrouched = false;
+                isCrouched = false;
+                success = true;
+            }
         }
         // Crouches player down to set height
         // Reduces walkSpeed
         else
         {
-            transform.localScale = new Vector3(originalScale.x, crouchHeight, originalScale.z);
-            walkSpeed *= speedReduction;
+            // Sometimes the character is shorter than its crouchHeight.
+            // It can happen after sliding, for example.
+            float newHeight = Mathf.Min(crouchHeight, transform.localScale.y);
+            transform.localScale = new Vector3(originalScale.x, newHeight, originalScale.z);
+            walkSpeed = crouchSpeed;
 
             isCrouched = true;
+            success = true;
         }
+
+        return success;
     }
 
     private void HeadBob()

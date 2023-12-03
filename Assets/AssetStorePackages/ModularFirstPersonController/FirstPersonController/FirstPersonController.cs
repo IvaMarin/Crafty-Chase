@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 using UnityEditor;
 #endif
 
-[RequireComponent(typeof(Rigidbody))]
 public class FirstPersonController : MonoBehaviour
 {
     private Rigidbody rb;
@@ -94,7 +93,7 @@ public class FirstPersonController : MonoBehaviour
     public float jumpPower = 5f;
 
     // Internal Variables
-    [HideInInspector] public bool isGrounded = false;
+    private bool isGrounded = false;
 
     #endregion
 

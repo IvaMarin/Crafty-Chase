@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class SlideAbility : MonoBehaviour
 {
     private FirstPersonController controller;
-    new private Rigidbody rigidbody;
+    private Rigidbody rb;
     [SerializeField] private float minimumSpeed = 6f;
     private float minimumSpeedSqr;
 
@@ -26,13 +26,13 @@ public class SlideAbility : MonoBehaviour
     void Awake()
     {
         controller = GetComponent<FirstPersonController>();
-        rigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         minimumSpeedSqr = minimumSpeed * minimumSpeed;
     }
 
     void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.LeftControl) && rigidbody.velocity.sqrMagnitude > minimumSpeedSqr)
+        if (Input.GetKey(KeyCode.LeftControl) && rb.velocity.sqrMagnitude > minimumSpeedSqr)
         {
             StartSliding();
         }

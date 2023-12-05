@@ -1,34 +1,37 @@
 using UnityEngine;
 
-/// <summary>
+
 /// Simple example of Grabbing system.
-/// </summary>
 public class SimpleGrabSystem : MonoBehaviour
 {
     // Reference to the character camera.
-    [SerializeField]
-    private Camera characterCamera;
+    [SerializeField] private Camera characterCamera;
 
     // Reference to the slot for holding picked item.
-    [SerializeField]
-    private Transform slot;
+    [SerializeField] private Transform slot;
 
     // Reference to the currently held item.
     private PickableItem pickedItem;
 
-    /// <summary>
+    private bool hasItem = false;
+
+    
     /// Method called very frame.
-    /// </summary>
     private void Update()
     {
+        if (Input.GetKeyUp(KeyCode.I) && pickedItem) {
+            hasItem = true;
+        }
+
         // Execute logic only on button pressed
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetKey(KeyCode.I))
         {
             // Check if player picked some item already
-            if (pickedItem)
+            if (pickedItem && hasItem)
             {
                 // If yes, drop picked item
                 ThrowItem(pickedItem);
+                hasItem = false;
             }
             else
             {
@@ -51,43 +54,39 @@ public class SimpleGrabSystem : MonoBehaviour
                 }
             }
         }
-        if (Input.GetButtonDown("Fire3"))
+        if (Input.GetKey(KeyCode.K))
         {
             if (pickedItem)
             {
                 DropItem(pickedItem);
+                hasItem = false;
             }
 
         }
     }
 
-    /// <summary>
+    
     /// Method for picking up item.
-    /// </summary>
-    /// <param name="item">Item.</param>
     private void PickItem(PickableItem item)
     {
         // Assign reference
         pickedItem = item;
 
         // Disable rigidbody and reset velocities
-        item.Rb.isKinematic = true;
-        item.Rb.velocity = Vector3.zero;
-        item.Rb.angularVelocity = Vector3.zero;
+        item.rb.isKinematic = true;
+
 
         // Set Slot as a parent
         item.transform.SetParent(slot);
 
         // Reset position and rotation
-        item.transform.localPosition = Vector3.zero;
+        item.transform.localPosition = new Vector3(1, 0,1);
         item.transform.localEulerAngles = Vector3.zero;
 
     }
 
-    /// <summary>
+    
     /// Method for dropping item.
-    /// </summary>
-    /// <param name="item">Item.</param>
     private void ThrowItem(PickableItem item)
     {
         // Remove reference
@@ -96,11 +95,12 @@ public class SimpleGrabSystem : MonoBehaviour
         // Remove parent
         item.transform.SetParent(null);
 
+
         // Enable rigidbody
-        item.Rb.isKinematic = false;
+        item.rb.isKinematic = false;
 
         // Add force to throw item a little bit
-        item.Rb.AddForce(item.transform.forward * 15, ForceMode.VelocityChange);
+        item.rb.AddForce(item.transform.forward * 15, ForceMode.VelocityChange);
     }
 
     private void DropItem(PickableItem item)
@@ -112,9 +112,9 @@ public class SimpleGrabSystem : MonoBehaviour
         item.transform.SetParent(null);
 
         // Enable rigidbody
-        item.Rb.isKinematic = false;
+        item.rb.isKinematic = false;
 
         // Add force to throw item a little bit
-        item.Rb.AddForce(item.transform.forward * 1, ForceMode.VelocityChange);
+        item.rb.AddForce(item.transform.forward * 1, ForceMode.VelocityChange);
     }
 }

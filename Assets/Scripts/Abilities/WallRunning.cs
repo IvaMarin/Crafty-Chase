@@ -10,14 +10,14 @@ public class WallRunning : MonoBehaviour
 
     [SerializeField] private LayerMask wall;
 
-    [SerializeField] private float wallRunForce;
+    [SerializeField] private float wallRunForce = 200f;
     //private float maxWallRunTimer;
     //private float wallRunTimer;
 
     private float horizontalInput;
     private float verticalInput;
 
-    [SerializeField] private float wallCheckDistance;
+    [SerializeField] private float wallCheckDistance = 0.7f;
 
     private RaycastHit leftWallHit;
     private RaycastHit rightWallHit;

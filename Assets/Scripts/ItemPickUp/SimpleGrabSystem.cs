@@ -1,7 +1,5 @@
 using UnityEngine;
 
-
-/// Simple example of Grabbing system.
 public class SimpleGrabSystem : MonoBehaviour
 {
     // Reference to the character camera.
@@ -15,11 +13,11 @@ public class SimpleGrabSystem : MonoBehaviour
 
     private bool hasItem = false;
 
-    
-    /// Method called very frame.
+
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.I) && pickedItem) {
+        if (Input.GetKeyUp(KeyCode.I) && pickedItem)
+        {
             hasItem = true;
         }
 
@@ -65,8 +63,6 @@ public class SimpleGrabSystem : MonoBehaviour
         }
     }
 
-    
-    /// Method for picking up item.
     private void PickItem(PickableItem item)
     {
         // Assign reference
@@ -80,13 +76,11 @@ public class SimpleGrabSystem : MonoBehaviour
         item.transform.SetParent(slot);
 
         // Reset position and rotation
-        item.transform.localPosition = new Vector3(1, 0,1);
+        item.transform.localPosition = new Vector3(1, 0, 1);
         item.transform.localEulerAngles = Vector3.zero;
 
     }
 
-    
-    /// Method for dropping item.
     private void ThrowItem(PickableItem item)
     {
         // Remove reference

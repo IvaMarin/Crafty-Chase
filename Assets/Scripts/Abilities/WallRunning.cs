@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(FirstPersonController))]
@@ -11,8 +9,6 @@ public class WallRunning : MonoBehaviour
     [SerializeField] private LayerMask wall;
 
     [SerializeField] private float wallRunForce = 200f;
-    //private float maxWallRunTimer;
-    //private float wallRunTimer;
 
     private float horizontalInput;
     private float verticalInput;

@@ -16,13 +16,13 @@ public class SimpleGrabSystem : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.I) && pickedItem)
+        if (Input.GetMouseButtonDown(0) && pickedItem)
         {
             hasItem = true;
         }
 
         // Execute logic only on button pressed
-        if (Input.GetKey(KeyCode.I))
+        if (Input.GetMouseButtonDown(0))
         {
             // Check if player picked some item already
             if (pickedItem && hasItem)
@@ -52,7 +52,7 @@ public class SimpleGrabSystem : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKey(KeyCode.K))
+        if (Input.GetMouseButtonDown(2))
         {
             if (pickedItem)
             {

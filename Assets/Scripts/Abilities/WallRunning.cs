@@ -4,7 +4,7 @@ using UnityEngine;
 public class WallRunning : MonoBehaviour
 {
     private Rigidbody rb;
-    private FirstPersonController fpsContoller;
+    private FirstPersonController fpsController;
 
     [SerializeField] private LayerMask wall;
 
@@ -25,7 +25,7 @@ public class WallRunning : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        fpsContoller = GetComponent<FirstPersonController>();
+        fpsController = GetComponent<FirstPersonController>();
     }
 
     private void Update()
@@ -53,7 +53,7 @@ public class WallRunning : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
-        if ((isWallOnLeftSide || isWallOnRightSide) && verticalInput > 0 && !fpsContoller.isGrounded)
+        if ((isWallOnLeftSide || isWallOnRightSide) && verticalInput > 0 && !fpsController.isGrounded)
         {
             StartWallRunning();
         }

@@ -650,6 +650,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallBrickDoor
       objectReference: {fileID: 0}
+    - target: {fileID: 4380612870584265338, guid: b6eb16e3308c67843aa25bf3abdd844a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.1857405
+      objectReference: {fileID: 0}
+    - target: {fileID: 4380612870584265338, guid: b6eb16e3308c67843aa25bf3abdd844a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.4999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4380612870584265338, guid: b6eb16e3308c67843aa25bf3abdd844a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.5040529
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1565,6 +1580,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4646305069777832643, guid: 445f84d7d07ddc1439b45b3eb63efd9b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.2718165
+      objectReference: {fileID: 0}
+    - target: {fileID: 4646305069777832643, guid: 445f84d7d07ddc1439b45b3eb63efd9b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.095
+      objectReference: {fileID: 0}
+    - target: {fileID: 4646305069777832643, guid: 445f84d7d07ddc1439b45b3eb63efd9b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.29594713
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

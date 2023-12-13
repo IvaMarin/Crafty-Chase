@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 // The bear trap creates a FixedJoint upon rigidbody detection.
@@ -9,12 +10,12 @@ public class BearTrap : MonoBehaviour
 {
     [SerializeField] Animator anim;
     [SerializeField] float unclenchTime = 3f;
-    [SerializeField] string PlayerTag;  // to test if the trap caught player or an object
     private bool activated = false;  // is the trap currently holding something?
     private Rigidbody victim_rb;
     private FixedJoint joint_with_victim;
     private float unclenchTimeLeft;
     private bool heldObjectIsPlayer;
+    private Slider playerSlider;  // progress bar of unclenching
 
 
     private void Awake()
@@ -38,10 +39,17 @@ public class BearTrap : MonoBehaviour
         {
             joint_with_victim = victim_rb.gameObject.AddComponent<FixedJoint>();
             joint_with_victim.connectedBody = GetComponent<Rigidbody>();
-            if (victim_rb.gameObject.tag == PlayerTag)
+            if (victim_rb.GetComponent<FirstPersonController>() != null)
             {
+                Debug.Log("A player!");
                 heldObjectIsPlayer = true;
                 unclenchTimeLeft = unclenchTime;
+                if (victim_rb.TryGetComponent(out BearTrapUIGetter uiGetter))
+                {
+                    Debug.Log("I found his trap ui!");
+                    playerSlider = uiGetter.GetProgressBar();
+                    playerSlider.gameObject.SetActive(true);
+                }
             }
         }
     }
@@ -49,12 +57,16 @@ public class BearTrap : MonoBehaviour
 
     private void Unclench()
     {
-        if (joint_with_victim != null)
+        if (playerSlider != null)
         {
-            Destroy(joint_with_victim);
-            victim_rb = null;
-            joint_with_victim = null;
+            playerSlider.gameObject.SetActive(false);
         }
+
+        Destroy(null);
+        Destroy(joint_with_victim);
+        victim_rb = null;
+        joint_with_victim = null;
+        playerSlider = null;
     }
 
 
@@ -69,6 +81,10 @@ public class BearTrap : MonoBehaviour
             }
             
             unclenchTimeLeft -= Time.deltaTime;
+            if (playerSlider != null)
+            {
+                playerSlider.value = 1f - unclenchTimeLeft / unclenchTime;
+            }
         }
     }
 

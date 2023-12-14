@@ -41,12 +41,10 @@ public class BearTrap : MonoBehaviour
             joint_with_victim.connectedBody = GetComponent<Rigidbody>();
             if (victim_rb.GetComponent<FirstPersonController>() != null)
             {
-                Debug.Log("A player!");
                 heldObjectIsPlayer = true;
                 unclenchTimeLeft = unclenchTime;
                 if (victim_rb.TryGetComponent(out BearTrapUIGetter uiGetter))
                 {
-                    Debug.Log("I found his trap ui!");
                     playerSlider = uiGetter.GetProgressBar();
                     playerSlider.gameObject.SetActive(true);
                 }

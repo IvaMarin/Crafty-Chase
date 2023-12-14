@@ -510,6 +510,7 @@ GameObject:
   - component: {fileID: 4459864850019384741}
   - component: {fileID: 4459864850019384740}
   - component: {fileID: 1496006326453954387}
+  - component: {fileID: 2310256892898440210}
   m_Layer: 0
   m_Name: FirstPersonController
   m_TagString: Player
@@ -702,6 +703,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   progressBar: {fileID: 4423341473193987105}
+--- !u!114 &2310256892898440210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4459864850019384750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed430986edc50cf468f2b42d7b15a988, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera: {fileID: 4459864851310106429}
+  nameAndAmountText: {fileID: 7846699588174933369}
 --- !u!1 &4459864850190357393
 GameObject:
   m_ObjectHideFlags: 0

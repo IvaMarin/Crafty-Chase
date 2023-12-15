@@ -12,7 +12,7 @@ public class OpenDoor : MonoBehaviour
     [SerializeField] private int CloseDuration = 300;
     public Rigidbody rb;
     public Transform tr;
-    private Transform startposition;
+    private Vector3 startposition;
     private int CurProgress = 0;
     // private const int MaxProgress = 300;
     private OpenBar openbar;
@@ -69,12 +69,13 @@ public class OpenDoor : MonoBehaviour
         
         rb = GetComponent<Rigidbody>();
         tr = GetComponent<Transform>();
+        Debug.Log(tr.rotation.eulerAngles.y);
         var panel = tr.GetChild(0).gameObject;
         var bar = panel.GetComponent<Transform>().GetChild(0).GetComponent<Transform>().GetChild(0);
         progressBar = bar.GetComponent<ProgressBar>();
         openbar = panel.GetComponent<OpenBar>();
         Debug.Log(openbar);
-        startposition = tr;
+        startposition = tr.localRotation.eulerAngles;
     }
 
     // Update is called once per frame
@@ -90,25 +91,27 @@ public class OpenDoor : MonoBehaviour
             direction = 1;
             Vector3 aroundPosition = tr.position + new Vector3(0, 0.25f, 0);
             tr.RotateAround(aroundPosition, new Vector3(0, 1, 0), direction * DoorSpeed);
-            if (tr.rotation.eulerAngles.y >= 100f)
+            Debug.Log(Mathf.Abs(tr.localRotation.eulerAngles.y - startposition.y));
+            if (Mathf.Abs(tr.localRotation.eulerAngles.y - startposition.y) >= 100f)
             {
                 NextState();
-                Debug.Log("open next state ");
-                Debug.Log(state);
+                // Debug.Log("open next state ");
+                // Debug.Log(state);
             }
         }
         if (state == State.Close)
         {
+            Debug.Log(state);
             direction = -1;
             Vector3 aroundPosition = tr.position + new Vector3(0, 0.25f, 0);
             tr.RotateAround(aroundPosition, new Vector3(0, 1, 0), direction * DoorSpeed);
-            // Debug.Log(tr.rotation.eulerAngles.y);
-            if (tr.rotation.eulerAngles.y <= 0f || tr.rotation.eulerAngles.y > 130f)
+            // Debug.Log(tr.localRotation.eulerAngles.y);
+            if (Mathf.Abs(tr.localRotation.eulerAngles.y - startposition.y) <= 1 || Mathf.Abs(tr.localRotation.eulerAngles.y - startposition.y) > 350f)
             {
                 CurProgress = 0;
                 NextState();
-                Debug.Log("open next state");
-                Debug.Log(state);
+                // Debug.Log("open next state");
+                // Debug.Log(state);
             }
         }
     }

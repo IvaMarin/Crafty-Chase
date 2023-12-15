@@ -12,7 +12,8 @@ public class SimpleGrabSystem : MonoBehaviour
     private PickableItem pickedItem;
 
     private bool hasItem = false;
-
+    private bool isOpening = false;
+    private OpenDoor currentDoor;
 
     private void Update()
     {
@@ -42,6 +43,7 @@ public class SimpleGrabSystem : MonoBehaviour
                 {
                     // Check if object is pickable
                     var pickable = hit.transform.GetComponent<PickableItem>();
+                    var openable = hit.transform.GetComponent<OpenDoor>();
 
                     // If object has PickableItem class
                     if (pickable)
@@ -52,6 +54,38 @@ public class SimpleGrabSystem : MonoBehaviour
                 }
             }
         }
+
+        if (Input.GetMouseButton(0) && isOpening==false)
+        {
+            var ray = characterCamera.ViewportPointToRay(Vector3.one * 0.5f);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 5f)) //was 1.5f
+            {
+                var openable = hit.transform.GetComponent<OpenDoor>();
+
+                // If object has PickableItem class
+                if (openable)
+                {
+                    isOpening = true;
+                    currentDoor = openable;
+                    openable.StartBar();
+                }
+            }
+        }
+        else if (Input.GetMouseButton(0) && isOpening == true)
+        {
+            currentDoor.Open();
+        }
+        else
+        {
+            if (isOpening)
+            {
+                currentDoor.StopBar();
+                isOpening = false;
+            }
+        }
+
+
         if (Input.GetMouseButtonDown(2))
         {
             if (pickedItem)
@@ -59,9 +93,9 @@ public class SimpleGrabSystem : MonoBehaviour
                 DropItem(pickedItem);
                 hasItem = false;
             }
-
         }
     }
+
 
     private void PickItem(PickableItem item)
     {
@@ -78,7 +112,6 @@ public class SimpleGrabSystem : MonoBehaviour
         // Reset position and rotation
         item.transform.localPosition = new Vector3(1, 0, 1);
         item.transform.localEulerAngles = Vector3.zero;
-
     }
 
     private void ThrowItem(PickableItem item)

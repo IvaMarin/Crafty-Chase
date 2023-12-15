@@ -74,7 +74,7 @@ public class SimpleGrabSystem : MonoBehaviour
         }
         else if (Input.GetMouseButton(0) && isDooring == true)
         {
-            currentDoor.Process();
+            currentDoor.LoadBar();
         }
         else
         {

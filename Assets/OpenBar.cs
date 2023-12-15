@@ -11,7 +11,7 @@ public class OpenBar : MonoBehaviour
         rt = GetComponent<RectTransform>();
     }
 
-    public void Setup()
+    public void Open()
     {
         
         gameObject.SetActive(true);

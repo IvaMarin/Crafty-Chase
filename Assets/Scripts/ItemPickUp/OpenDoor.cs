@@ -117,11 +117,11 @@ public class OpenDoor : MonoBehaviour
     {
         if (state == State.Wait)
         {
-            openbar.Setup();
+            openbar.Open();
         }
     }
 
-    public void Process()
+    public void LoadBar()
     {
         // Debug.Log("Started Open");
         if (state == State.Wait)

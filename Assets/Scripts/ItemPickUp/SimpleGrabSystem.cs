@@ -12,7 +12,7 @@ public class SimpleGrabSystem : MonoBehaviour
     private PickableItem pickedItem;
 
     private bool hasItem = false;
-    private bool isOpening = false;
+    private bool isDooring = false;
     private OpenDoor currentDoor;
 
     private void Update()
@@ -55,7 +55,7 @@ public class SimpleGrabSystem : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButton(0) && isOpening==false)
+        if (Input.GetMouseButton(0) && isDooring==false)
         {
             var ray = characterCamera.ViewportPointToRay(Vector3.one * 0.5f);
             RaycastHit hit;
@@ -66,22 +66,22 @@ public class SimpleGrabSystem : MonoBehaviour
                 // If object has PickableItem class
                 if (openable)
                 {
-                    isOpening = true;
+                    isDooring = true;
                     currentDoor = openable;
                     openable.StartBar();
                 }
             }
         }
-        else if (Input.GetMouseButton(0) && isOpening == true)
+        else if (Input.GetMouseButton(0) && isDooring == true)
         {
-            currentDoor.Open();
+            currentDoor.Process();
         }
         else
         {
-            if (isOpening)
+            if (isDooring)
             {
                 currentDoor.StopBar();
-                isOpening = false;
+                isDooring = false;
             }
         }
 

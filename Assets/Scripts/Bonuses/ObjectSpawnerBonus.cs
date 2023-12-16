@@ -12,7 +12,7 @@ public class ObjectSpawnerBonus : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Inventory inventory))
+        if (other.transform.parent.parent.TryGetComponent(out Inventory inventory))
         {
             inventory.AcquireItem(new ObjectSpawner(prefab, preview, inHandModel, amount));
             gameObject.SetActive(false);

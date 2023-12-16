@@ -35,7 +35,8 @@ public class BearTrap : MonoBehaviour
         anim.SetBool("Activated", true);
 
         if (perturbator.TryGetComponent(out victim_rb) ||
-            (perturbator.parent != null && perturbator.parent.TryGetComponent(out victim_rb)))
+            (perturbator.parent != null && perturbator.parent.parent != null &&
+             perturbator.parent.parent.TryGetComponent(out victim_rb)))
         {
             joint_with_victim = victim_rb.gameObject.AddComponent<FixedJoint>();
             joint_with_victim.connectedBody = GetComponent<Rigidbody>();

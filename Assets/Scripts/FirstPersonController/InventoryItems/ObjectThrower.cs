@@ -1,48 +1,48 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectSpawner : InventoryItem
+
+// Similar to ObjectSpawner, but throws objects instead of calmly placing them.
+public class ObjectThrower : InventoryItem
 {
-    float maxDistance = 5f;
+    float awayDistance = 2f;  // how far from player to instantiate them
+    float throwForce;
     GameObject prefab;
-    Transform preview;  // to see where trap will be placed
     GameObject inHandModel;  // to see prefab in your hand
-    Vector3 farAway = Vector3.down * 1000f;  // to hide things
     int amountLeft;
 
 
-    public ObjectSpawner(GameObject prefab, Transform preview, GameObject inHandModel, int amount = 1)
+    public ObjectThrower(GameObject prefab, GameObject inHandModel, int amount = 1, float throwForce = 1f)
     {
         this.prefab = prefab;
-        this.preview = preview;
         this.inHandModel = inHandModel;
         this.amountLeft = amount;
+        this.throwForce = throwForce;
     }
 
 
     public override void TryUse(Transform origin, Vector3 direction)
     {
         if (amountLeft > 0 &&
-            Physics.Raycast(origin.position, direction, out RaycastHit hit, maxDistance))
+            !Physics.Raycast(origin.position, direction, out RaycastHit hit, 1f))
         {
-            GameObject.Instantiate(prefab, hit.point, Quaternion.identity);
+            var obj = GameObject.Instantiate(prefab, origin.position + direction * awayDistance, Quaternion.identity);
+
+            if (obj.TryGetComponent(out Rigidbody rb))
+            {
+                rb.AddForce(direction * throwForce, ForceMode.Impulse);
+            }
+            else
+            {
+                Debug.Log("Hey, where banana rigidbody?");
+            }
+
             amountLeft--;
         }
     }
-    
+
 
     public override void Update(Transform origin, Vector3 direction)
     {
-        if (Physics.Raycast(origin.position, direction, out RaycastHit hit, maxDistance))
-        {
-            preview.position = hit.point;
-        }
-        else
-        {
-            preview.position = farAway;
-        }
-
         inHandModel.transform.position = origin.TransformPoint(new Vector3(1f, -0.5f, 1f));
         inHandModel.transform.rotation = origin.rotation;
     }
@@ -56,19 +56,17 @@ public class ObjectSpawner : InventoryItem
 
     public override void OnSwitchedFrom()
     {
-        preview.position = farAway;
         inHandModel.SetActive(false);
     }
-
 
     public override bool TryAdd(InventoryItem other)
     {
         bool result = false;
 
         if (other.GetType() == this.GetType() &&
-            ((ObjectSpawner)other).prefab == this.prefab)
+            ((ObjectThrower)other).prefab == this.prefab)
         {
-            amountLeft += ((ObjectSpawner)other).amountLeft;
+            amountLeft += ((ObjectThrower)other).amountLeft;
             result = true;
         }
 
@@ -78,6 +76,6 @@ public class ObjectSpawner : InventoryItem
 
     public override string GetNameAndAmount()
     {
-        return "Bear trap (" + amountLeft + ")";
+        return "Banana (" + amountLeft + ")";
     }
 }

@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectSpawnerBonus : MonoBehaviour
+public class ObjectThrowerBonus : MonoBehaviour
 {
     [SerializeField] GameObject prefab;
-    [SerializeField] Transform preview;
     [SerializeField] GameObject inHandModel;
     [SerializeField] int amount = 1;
 
@@ -14,7 +13,7 @@ public class ObjectSpawnerBonus : MonoBehaviour
     {
         if (other.attachedRigidbody.TryGetComponent(out Inventory inventory))
         {
-            inventory.AcquireItem(new ObjectSpawner(prefab, preview, inHandModel, amount));
+            inventory.AcquireItem(new ObjectThrower(prefab, inHandModel, amount, 20f));
             gameObject.SetActive(false);
         }
     }

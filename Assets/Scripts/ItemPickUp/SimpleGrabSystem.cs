@@ -13,7 +13,7 @@ public class SimpleGrabSystem : MonoBehaviour
 
     private bool hasItem = false;
     private bool isDooring = false;
-    private OpenDoor currentDoor;
+    private OpenManager currentDoor;
 
     private void Update()
     {
@@ -43,7 +43,7 @@ public class SimpleGrabSystem : MonoBehaviour
                 {
                     // Check if object is pickable
                     var pickable = hit.transform.GetComponent<PickableItem>();
-                    var openable = hit.transform.GetComponent<OpenDoor>();
+                    var openable = hit.transform.GetComponent<OpenManager>();
 
                     // If object has PickableItem class
                     if (pickable)
@@ -61,7 +61,7 @@ public class SimpleGrabSystem : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 5f)) //was 1.5f
             {
-                var openable = hit.transform.GetComponent<OpenDoor>();
+                var openable = hit.transform.GetComponent<OpenManager>();
 
                 // If object has PickableItem class
                 if (openable)

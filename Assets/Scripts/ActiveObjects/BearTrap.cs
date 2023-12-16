@@ -28,27 +28,23 @@ public class BearTrap : MonoBehaviour
 
 
     // something or someone got into the trap
-    public void SetOff(Transform perturbator)
+    public void SetOff(Rigidbody perturbator)
     {
         activated = true;
 
         anim.SetBool("Activated", true);
 
-        if (perturbator.TryGetComponent(out victim_rb) ||
-            (perturbator.parent != null && perturbator.parent.parent != null &&
-             perturbator.parent.parent.TryGetComponent(out victim_rb)))
+        victim_rb = perturbator;
+        joint_with_victim = victim_rb.gameObject.AddComponent<FixedJoint>();
+        joint_with_victim.connectedBody = GetComponent<Rigidbody>();
+        if (victim_rb.GetComponent<FirstPersonController>() != null)
         {
-            joint_with_victim = victim_rb.gameObject.AddComponent<FixedJoint>();
-            joint_with_victim.connectedBody = GetComponent<Rigidbody>();
-            if (victim_rb.GetComponent<FirstPersonController>() != null)
+            heldObjectIsPlayer = true;
+            unclenchTimeLeft = unclenchTime;
+            if (victim_rb.TryGetComponent(out BearTrapUIGetter uiGetter))
             {
-                heldObjectIsPlayer = true;
-                unclenchTimeLeft = unclenchTime;
-                if (victim_rb.TryGetComponent(out BearTrapUIGetter uiGetter))
-                {
-                    playerSlider = uiGetter.GetProgressBar();
-                    playerSlider.gameObject.SetActive(true);
-                }
+                playerSlider = uiGetter.GetProgressBar();
+                playerSlider.gameObject.SetActive(true);
             }
         }
     }
@@ -91,7 +87,7 @@ public class BearTrap : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!activated) {
-            SetOff(other.transform);
+            SetOff(other.attachedRigidbody);
         }
     }
 }

@@ -65,7 +65,8 @@ public class ObjectSpawner : InventoryItem
     {
         bool result = false;
 
-        if (other.GetType() == this.GetType())
+        if (other.GetType() == this.GetType() &&
+            ((ObjectSpawner)other).prefab == this.prefab)
         {
             amountLeft += ((ObjectSpawner)other).amountLeft;
             result = true;

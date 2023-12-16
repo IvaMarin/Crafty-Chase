@@ -32,11 +32,11 @@ public class BananaPeel : MonoBehaviour
     }
 
 
-    private void FixedUpdate()
+    private void Update()
     {
-        // Timer
         slippingTimeLeft -= Time.deltaTime;
-        if (slippingTimeLeft < 0f)
+
+        if (slippingTimeLeft < 0f || victim == null || victim.isKinematic)
         {
             Destroy(joint_with_victim);
 
@@ -50,8 +50,11 @@ public class BananaPeel : MonoBehaviour
             joint_with_victim = null;
             playerController = null;
         }
+    }
 
-        // Act upon victim
+
+    private void FixedUpdate()
+    {
         if (joint_with_victim != null)
         {
             NormalizeNonverticalVelocity(victim);

@@ -9,7 +9,7 @@ public class MechanicsBase : MonoBehaviour
     protected OpenManager manager;
     protected Vector3 startrotation;
     protected float DoorSpeed;
-    void Start()
+    public void SetUp()
     {
         tr = GetComponent<Transform>();
         manager = GetComponent<OpenManager>();

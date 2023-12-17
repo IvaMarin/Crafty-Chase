@@ -57,7 +57,10 @@ public class OpenManager : MonoBehaviour
             script = tScript;
         }
         startposition = tr.localRotation.eulerAngles;
-       
+        if (script)
+        {
+            script.SetUp();
+        }
     }
 
     public void NextState()

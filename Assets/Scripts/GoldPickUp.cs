@@ -13,8 +13,8 @@ public class GoldPickUp : MonoBehaviour
     }
     
     private void Start() {
-        // Debug.Log("gamemanager " + gameManager);
-        // Debug.Log("start gold " + gold);
+        Debug.Log("gamemanager " + gameManager);
+        Debug.Log("start gold " + gold);
         gameManager.ChangeGoldText(gold);
     }
     

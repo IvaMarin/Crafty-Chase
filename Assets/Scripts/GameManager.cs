@@ -14,14 +14,14 @@ public class GameManager : MonoBehaviour
     {
 
         txt = GetComponent<TextMeshProUGUI>();
-
+        
+        Debug.Log("txt in manager     " + txt);
     }
     
 
     public void ChangeGoldText(int goldCount)
     {
         // TextMeshProUGUI tmp = goldUI.GetComponent<TextMeshProUGUI>();
-        // Debug.Log("goldcount   " + goldCount);
         txt.text = "Gold: " + goldCount;
     }
 }

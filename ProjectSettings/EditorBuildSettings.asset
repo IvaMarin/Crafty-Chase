@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/PrototypeLevel.unity
+    path: Assets/Scenes/PrototypeLevel_gold+hook.unity
     guid: 8640b3d88328b104288f3387228846f2
   m_configObjects: {}

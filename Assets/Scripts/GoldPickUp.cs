@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GoldPickUp : MonoBehaviour
 {
-    [SerializeField] private int gold = 0;
+     private int gold = 0;
     [SerializeField] private GameManager gameManager;
 
     private void Awake()
@@ -13,18 +13,21 @@ public class GoldPickUp : MonoBehaviour
     }
     
     private void Start() {
+        // Debug.Log("gamemanager " + gameManager);
+        // Debug.Log("start gold " + gold);
         gameManager.ChangeGoldText(gold);
     }
     
-    public void OnTriggerEnter(Collider col)
+    public void Collect(int value)
     {
-        if (!col.gameObject.CompareTag("Gold")) return;
-        gold += 1;
+
+        gold += value;
         PlayerPrefs.SetInt("Gold", gold);
+        // Debug.Log("set   "+gold);
         gameManager.ChangeGoldText(gold);
-        GameObject o;
-        (o = col.gameObject).SetActive(false);
-        Destroy(o);
+        // GameObject o;
+        // (o = col.gameObject).SetActive(false);
+        // Destroy(o);
     }
     
     

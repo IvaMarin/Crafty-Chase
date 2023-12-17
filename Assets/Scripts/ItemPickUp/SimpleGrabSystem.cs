@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class SimpleGrabSystem : MonoBehaviour
@@ -14,6 +15,12 @@ public class SimpleGrabSystem : MonoBehaviour
     private bool hasItem = false;
     private bool isOpening = false;
     private OpenManager currentDoor;
+    private GoldPickUp goldPicker;
+
+    private void Start()
+    {
+        goldPicker = GetComponent<GoldPickUp>();
+    }
 
     private void Update()
     {
@@ -43,7 +50,7 @@ public class SimpleGrabSystem : MonoBehaviour
                 {
                     // Check if object is pickable
                     var pickable = hit.transform.GetComponent<PickableItem>();
-                    // var openable = hit.transform.GetComponent<OpenManager>();
+                    var collectable = hit.transform.GetComponent<Collectable>();
 
                     // If object has PickableItem class
                     if (pickable)
@@ -51,6 +58,11 @@ public class SimpleGrabSystem : MonoBehaviour
                         // Pick it
                         PickItem(pickable);
                         return;
+                    }
+
+                    if (collectable)
+                    {
+                        goldPicker.Collect(collectable.Collect());
                     }
                 }
             }

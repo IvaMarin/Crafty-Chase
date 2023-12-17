@@ -18,14 +18,13 @@ public class GoldPickUp : MonoBehaviour
     
     public void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Gold")
-        {
-            gold += 1;
-            PlayerPrefs.SetInt("Gold", gold);
-            gameManager.ChangeGoldText(gold);
-            col.gameObject.SetActive(false);
-            Destroy(col.gameObject);
-        }
+        if (!col.gameObject.CompareTag("Gold")) return;
+        gold += 1;
+        PlayerPrefs.SetInt("Gold", gold);
+        gameManager.ChangeGoldText(gold);
+        GameObject o;
+        (o = col.gameObject).SetActive(false);
+        Destroy(o);
     }
     
     

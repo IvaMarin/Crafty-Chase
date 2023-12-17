@@ -49,7 +49,7 @@ public class GrapplingHook : MonoBehaviour
 
         grappling = true;
 
-        pm.freeze = true;
+        pm.playerCanMove = true;
 
         RaycastHit hit;
         if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrappleDistance, whatIsGrappleable))
@@ -71,7 +71,7 @@ public class GrapplingHook : MonoBehaviour
 
     private void ExecuteGrapple()
     {
-        pm.freeze = false;
+        pm.playerCanMove = false;
 
         Vector3 lowestPoint = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
 
@@ -87,7 +87,7 @@ public class GrapplingHook : MonoBehaviour
 
     public void StopGrapple()
     {
-        pm.freeze = false;
+        pm.playerCanMove = false;
 
         grappling = false;
 

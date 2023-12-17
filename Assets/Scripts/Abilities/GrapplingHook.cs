@@ -71,7 +71,7 @@ public class GrapplingHook : MonoBehaviour
 
     private void ExecuteGrapple()
     {
-        pm.playerCanMove = false;
+        pm.playerCanMove = true;
 
         Vector3 lowestPoint = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
 
@@ -87,7 +87,7 @@ public class GrapplingHook : MonoBehaviour
 
     public void StopGrapple()
     {
-        pm.playerCanMove = false;
+        pm.playerCanMove = true;
 
         grappling = false;
 

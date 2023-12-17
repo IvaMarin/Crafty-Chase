@@ -105,6 +105,7 @@ public class FirstPersonController : MonoBehaviour
     public KeyCode crouchKey = KeyCode.LeftControl;
     public float crouchHeight = .75f;
     public float speedReduction = .5f;
+    public Transform crouchColliders;  // colliders to scale when crouching
 
     // Internal Variables
     private bool isCrouched = false;
@@ -141,7 +142,7 @@ public class FirstPersonController : MonoBehaviour
 
         // Set internal variables
         playerCamera.fieldOfView = fov;
-        originalScale = transform.localScale;
+        originalScale = crouchColliders.localScale;
         normalWalkSpeed = walkSpeed;
         crouchSpeed = normalWalkSpeed * speedReduction;
         jointOriginalPos = joint.localPosition;
@@ -431,11 +432,12 @@ public class FirstPersonController : MonoBehaviour
     // Sets isGrounded based on a spherecast sent straigth down from the player object
     private void CheckGround()
     {
-        Vector3 origin = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * 0.5f), transform.position.z);
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y - (crouchColliders.localScale.y * 0.45f), transform.position.z);
         Vector3 direction = transform.TransformDirection(Vector3.down);
-        float distance = .75f;
+        float radius = 0.45f * crouchColliders.localScale.y;
+        float distance = 0.2f;
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, distance))
+        if (Physics.SphereCast(origin, radius, direction, out RaycastHit hit, distance))
         {
             Debug.DrawRay(origin, direction * distance, Color.red);
             isGrounded = true;
@@ -508,7 +510,7 @@ public class FirstPersonController : MonoBehaviour
         Vector3 origin = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         Vector3 direction = transform.TransformDirection(Vector3.up);
         float radius = 0.49f;
-        float distance = 1.5f - transform.localScale.y;
+        float distance = 1.5f - crouchColliders.localScale.y;
         return Physics.SphereCast(origin, radius, direction, out RaycastHit hit, distance);
     }
 
@@ -525,7 +527,7 @@ public class FirstPersonController : MonoBehaviour
         {
             if (!CheckCeiling())
             {
-                transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
+                crouchColliders.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
                 walkSpeed = normalWalkSpeed;
 
                 isCrouched = false;
@@ -538,8 +540,8 @@ public class FirstPersonController : MonoBehaviour
         {
             // Sometimes the character is shorter than its crouchHeight.
             // It can happen after sliding, for example.
-            float newHeight = Mathf.Min(crouchHeight, transform.localScale.y);
-            transform.localScale = new Vector3(originalScale.x, newHeight, originalScale.z);
+            float newHeight = Mathf.Min(crouchHeight, crouchColliders.localScale.y);
+            crouchColliders.localScale = new Vector3(originalScale.x, newHeight, originalScale.z);
             walkSpeed = crouchSpeed;
 
             isCrouched = true;
@@ -748,6 +750,7 @@ public class FirstPersonControllerEditor : Editor
         fpc.holdToCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Hold To Crouch", "Requires the player to hold the crouch key instead if pressing to crouch and uncrouch."), fpc.holdToCrouch);
         fpc.crouchKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Crouch Key", "Determines what key is used to crouch."), fpc.crouchKey);
         fpc.crouchHeight = EditorGUILayout.Slider(new GUIContent("Crouch Height", "Determines the y scale of the player object when crouched."), fpc.crouchHeight, .1f, 1);
+        fpc.crouchColliders = (Transform)EditorGUILayout.ObjectField(new GUIContent("Crouch Colliders", "Determines which object will be scaled when crouching, typically container of colliders."), fpc.crouchColliders, typeof(Transform), true);
         fpc.speedReduction = EditorGUILayout.Slider(new GUIContent("Speed Reduction", "Determines the percent 'Walk Speed' is reduced by. 1 being no reduction, and .5 being half."), fpc.speedReduction, .1f, 1);
         GUI.enabled = true;
 

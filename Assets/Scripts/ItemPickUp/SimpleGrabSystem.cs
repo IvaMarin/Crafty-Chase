@@ -49,9 +49,14 @@ public class SimpleGrabSystem : MonoBehaviour
                 if (Physics.Raycast(ray, out hit, 2.5f)) //was 1.5f
                 {
                     // Check if object is pickable
-                    var pickable = hit.transform.GetComponent<PickableItem>();
                     var collectable = hit.transform.GetComponent<Collectable>();
 
+                    if (collectable)
+                    {
+                        goldPicker.Collect(collectable.Collect());
+                        return;
+                    }
+                    var pickable = hit.transform.GetComponent<PickableItem>();
                     // If object has PickableItem class
                     if (pickable)
                     {
@@ -60,10 +65,6 @@ public class SimpleGrabSystem : MonoBehaviour
                         return;
                     }
 
-                    if (collectable)
-                    {
-                        goldPicker.Collect(collectable.Collect());
-                    }
                 }
             }
         }

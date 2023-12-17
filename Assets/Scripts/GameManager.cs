@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     // [SerializeField]private GameObject goldUI;
     // [SerializeField]
     private TextMeshProUGUI txt;
-    private int k = 0;
+    // private int k = 0;
     private void Start()
     {
 

@@ -124,6 +124,10 @@ public class FirstPersonController : MonoBehaviour
     // Internal Variables
     private Vector3 jointOriginalPos;
     private float timer = 0;
+    private Vector3 velocityToSet;
+    public bool freeze;
+    private bool isGrappleActive;
+    private bool enableMovementOnNextTouch;
 
     #endregion
 
@@ -369,7 +373,11 @@ public class FirstPersonController : MonoBehaviour
     void FixedUpdate()
     {
         #region Movement
-
+        
+        if (isGrappleActive) {
+            return;
+        }
+        
         if (playerCanMove)
         {
             // Calculate how fast we should be moving
@@ -451,6 +459,51 @@ public class FirstPersonController : MonoBehaviour
 
         ChangeCrouch(false);  // delete this line and instead vary jumpPower?
     }
+    
+    public Vector3 CalculateJumpVelocity(Vector3 startPoint, Vector3 endPoint, float trajectoryHeight)
+    {
+        float gravity = Physics.gravity.y;
+        float displacementY = endPoint.y - startPoint.y;
+        Vector3 displacementXZ = new Vector3(endPoint.x - startPoint.x, 0f, endPoint.z - startPoint.z);
+
+        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
+        Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity) 
+                                               + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
+
+        return velocityXZ + velocityY;
+    }
+
+    private void SetVelocity()
+    {
+        rb.velocity = velocityToSet;
+        enableMovementOnNextTouch = true;
+    }
+    
+    private void ResetRestrictions()
+    {
+        isGrappleActive = false;
+    }
+    
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (enableMovementOnNextTouch)
+        {
+            enableMovementOnNextTouch = false;
+            ResetRestrictions();
+
+            GetComponent<GrapplingHook>().StopGrapple();
+        }
+    }
+    
+    public void JumpToPosition(Vector3 targetPosition, float trajectoryHeight)
+    {
+        isGrappleActive = true;
+        velocityToSet = CalculateJumpVelocity(transform.position, targetPosition, trajectoryHeight);
+        Invoke(nameof(SetVelocity), 0.1f);
+
+        Invoke(nameof(ResetRestrictions), 3f);
+    }
+
 
     private bool CheckCeiling()
     {

@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     {
         if (txt)
         {
-        txt.text = "Gold: " + goldCount;
+        txt.text = ": " + goldCount;
         }
         else
         {

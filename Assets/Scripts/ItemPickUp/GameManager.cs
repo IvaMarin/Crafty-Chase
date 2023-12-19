@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     public void Setup()
     {
-        txt = GetComponent<TextMeshProUGUI>();
+        // txt = GetComponent<TextMeshProUGUI>();
     }
     
 
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     {
         if (txt)
         {
-        txt.text = "Gold: " + goldCount;
+        txt.text = ": " + goldCount;
         }
         else
         {

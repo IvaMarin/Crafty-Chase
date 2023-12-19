@@ -8,7 +8,9 @@ using UnityEngine;
 public class Countdown : MonoBehaviour
 
 {
-    [SerializeField]private float timeRemaining = 20;
+
+    [SerializeField]private int timeRemaining = 20;
+    [SerializeField] private string nextSceneName = "SeaPort";
     private TextMeshProUGUI displayTime;
     private bool isTimerStarted = false;
 
@@ -30,18 +32,24 @@ public class Countdown : MonoBehaviour
         DisplayTime(timeRemaining);
         displayTime.overrideColorTags = true;
         displayTime.faceColor = defaultColor;
+        Debug.Log(nextSceneName);
     }
     
     void Update()
     {
-        if (timeRemaining < 0)
+
+        if (isTimerStarted == false)
         {
-            SceneManager.LoadScene("test level");
-            
+            isTimerStarted = true;
+            StartCoroutine(DoStep());
         }
-        timeRemaining = timeRemaining - Time.deltaTime;
-        DisplayTime(timeRemaining);
-        
+
+        if (timeRemaining == 0)
+        {
+            
+            SceneManager.LoadScene(nextSceneName);
+        }
+        // Debug.Log(timeRemaining);
     }
     
     IEnumerator DoStep () {

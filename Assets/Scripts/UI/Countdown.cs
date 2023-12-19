@@ -9,6 +9,7 @@ public class Countdown : MonoBehaviour
 
 {
     [SerializeField]private int timeRemaining = 20;
+    [SerializeField] private string nextSceneName = "SeaPort";
     private TextMeshProUGUI displayTime;
     private bool isTimerStarted = false;
 
@@ -30,26 +31,36 @@ public class Countdown : MonoBehaviour
         DisplayTime(timeRemaining);
         displayTime.overrideColorTags = true;
         displayTime.faceColor = defaultColor;
+        Debug.Log(nextSceneName);
     }
     
     void Update()
     {
+        // Debug.Log(timeRemaining);
         if (isTimerStarted == false)
         {
             isTimerStarted = true;
-            StartCoroutine(DoStep(timeRemaining));
+            StartCoroutine(DoStep());
+            // Debug.Log("Coroutine ended");
         }
+
+        if (timeRemaining == 0)
+        {
+            
+            SceneManager.LoadScene(nextSceneName);
+            // Destroy(gameObject);
+        }
+        // Debug.Log(timeRemaining);
     }
     
-    IEnumerator DoStep (int seconds) {
-        int counter = seconds;
-        DisplayTime(counter);
-        while (counter > 0) {
+    IEnumerator DoStep () {
+        DisplayTime(timeRemaining);
+        while (timeRemaining > 0) {
             yield return new WaitForSeconds (1);
-            counter--;
-            DisplayTime(counter);
+            timeRemaining--;
+            DisplayTime(timeRemaining);
         }
-        SceneManager.LoadScene("SeaPort");
+        // SceneManager.LoadScene("SeaPort");
     }
     
     void DisplayTime(float timeToDisplay)

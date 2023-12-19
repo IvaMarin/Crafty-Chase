@@ -67,7 +67,7 @@ public class Countdown : MonoBehaviour
         int minutes = Mathf.FloorToInt(timeToDisplay / 60);
         int seconds = Mathf.FloorToInt(timeToDisplay % 60);
         displayTime.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-        if (seconds <= 5)
+        if (timeToDisplay <= 5)
         {
             if (seconds % 2 == 1)
             {

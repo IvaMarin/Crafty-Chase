@@ -9,7 +9,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(FirstPersonController))]
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] new Transform camera;  // new to override inherited member
+    [SerializeField] Transform playerCamera;  // new to override inherited member
     [SerializeField] TMP_Text nameAndAmountText;
     List<InventoryItem> items;
     int activeItemIndex = 0;
@@ -28,7 +28,7 @@ public class Inventory : MonoBehaviour
     {
         if (items.Count > 0)
         {
-            items[activeItemIndex].Update(camera, camera.forward);
+            items[activeItemIndex].Update(playerCamera, playerCamera.forward);
 
             if (Input.mouseScrollDelta.y > 0)
             {
@@ -50,7 +50,7 @@ public class Inventory : MonoBehaviour
     public void AcquireItem(InventoryItem item)
     {
         bool itemIsNew = true;
-        foreach(var current in items)
+        foreach (var current in items)
         {
             if (current.TryAdd(item))
             {
@@ -58,7 +58,7 @@ public class Inventory : MonoBehaviour
                 break;
             }
         }
-        
+
         if (itemIsNew)
         {
             items.Add(item);
@@ -94,7 +94,7 @@ public class Inventory : MonoBehaviour
     {
         if (activeItemIndex > 0)
         {
-            items[activeItemIndex].TryUse(camera, camera.forward);
+            items[activeItemIndex].TryUse(playerCamera, playerCamera.forward);
             nameAndAmountText.text = items[activeItemIndex].GetNameAndAmount();
         }
     }
@@ -111,17 +111,17 @@ public class InventoryItem
     }
 
 
-    public virtual void TryUse(Transform origin, Vector3 direction) {}
+    public virtual void TryUse(Transform origin, Vector3 direction) { }
 
 
-    public virtual void OnSwitchedTo() {}
+    public virtual void OnSwitchedTo() { }
 
 
-    public virtual void OnSwitchedFrom() {}
+    public virtual void OnSwitchedFrom() { }
 
 
     // called when the ability is held
-    public virtual void Update(Transform origin, Vector3 direction) {}
+    public virtual void Update(Transform origin, Vector3 direction) { }
 
 
     // If one of them is ability to put down bear traps and grants 3 bear traps,

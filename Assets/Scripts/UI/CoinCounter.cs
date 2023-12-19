@@ -23,7 +23,7 @@ public class CoinCounter : MonoBehaviour
     {
         gold = PlayerPrefs.GetInt("Gold") + delta;
         PlayerPrefs.SetInt("Gold", gold);
-        txt.SetText(""+gold);
+        txt.SetText(": "+gold);
         
     }
 }

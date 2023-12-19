@@ -11,7 +11,6 @@ public class MouseEnablePopupWindow : MonoBehaviour, IPointerEnterHandler, IPoin
     private void Start()
     {
         panel= GetComponent<Transform>().GetChild(2).gameObject;
-        Debug.Log(panel);
         panel.SetActive(false);
         // myDescription = description.text;
     }
@@ -22,17 +21,11 @@ public class MouseEnablePopupWindow : MonoBehaviour, IPointerEnterHandler, IPoin
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("OnMouseExit");
-        // description.SetText("");
         panel.SetActive(false);
         
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("OnMouseEnter");
-        // Debug.Log(Input.mousePosition);
-        // description.SetText(myDescription);
         panel.SetActive(true);
-        // popupWindowObject.SetActive(true);
     }
 }

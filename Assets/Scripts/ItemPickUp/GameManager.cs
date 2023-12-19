@@ -13,8 +13,6 @@ public class GameManager : MonoBehaviour
     // private int k = 0;
     private void Start()
     {
-        // Debug.Log("I am gamecontroller");
-        GetComponent<Transform>().parent.gameObject.SetActive(false);
 
         txt = GetComponent<TextMeshProUGUI>();
         // Debug.Log(txt);

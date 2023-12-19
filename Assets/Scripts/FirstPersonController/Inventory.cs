@@ -136,6 +136,6 @@ public class InventoryItem
 
     public virtual string GetNameAndAmount()
     {
-        return "Empty";
+        return "empty";
     }
 }

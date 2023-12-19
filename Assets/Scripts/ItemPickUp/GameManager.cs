@@ -26,15 +26,17 @@ public class GameManager : MonoBehaviour
 
     public void ChangeGoldText(int goldCount)
     {
-        if (txt)
-        {
-        txt.text = ": " + goldCount;
-        }
-        else
-        {
-            Debug.Log("FUCKING NULL");
-            txt = GetComponent<TextMeshProUGUI>();
-            ChangeGoldText(goldCount);
-        }
+        // haha this so evil recursion ^_^
+
+        //if (txt)
+        //{
+        //txt.text = ": " + goldCount;
+        //}
+        //else
+        //{
+        //    Debug.Log("FUCKING NULL");
+        //    txt = GetComponent<TextMeshProUGUI>();
+        //    ChangeGoldText(goldCount);
+        //}
     }
 }

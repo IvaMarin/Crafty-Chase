@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     public void Setup()
     {
-        txt = GetComponent<TextMeshProUGUI>();
+        // txt = GetComponent<TextMeshProUGUI>();
     }
     
 

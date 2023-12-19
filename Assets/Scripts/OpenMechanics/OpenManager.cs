@@ -8,12 +8,12 @@ public class OpenManager : MonoBehaviour
 {
     // Start is called before the first frame update
     public float Speed = 0.3f;
-    [SerializeField] private int OpenDuration = 300;
-    [SerializeField] private int CloseDuration = 300;
+    [SerializeField] private float OpenDuration = 300;
+    [SerializeField] private float CloseDuration = 300;
     public Rigidbody rb;
     public Transform tr;
     private Vector3 startposition;
-    private int CurProgress = 0;
+    private float CurProgress = 0;
     // private const int MaxProgress = 300;
     private OpenBar openbar;
     private ProgressBar progressBar;
@@ -45,7 +45,10 @@ public class OpenManager : MonoBehaviour
         var bar = panel.GetComponent<Transform>().GetChild(0).GetComponent<Transform>().GetChild(0);
         progressBar = bar.GetComponent<ProgressBar>();
         openbar = panel.GetComponent<OpenBar>();
-
+        // Debug.Log(PlayerPrefs.GetFloat("openCoef"));
+        CloseDuration /= PlayerPrefs.GetFloat("openCoef");
+        // Debug.Log(CloseDuration);
+        OpenDuration /= PlayerPrefs.GetFloat("openCoef");
         MechanicsBase tScript = GetComponent<ChestMechanics>();
         if (tScript)
         {
@@ -142,8 +145,8 @@ public class OpenManager : MonoBehaviour
         if (state == State.Wait)
         {
             // openbar.Setup();
-            CurProgress += 1;
-            int MaxProgress = (previousState == State.Close) ? CloseDuration : OpenDuration;
+            CurProgress += 1f;
+            float MaxProgress = (previousState == State.Close) ? CloseDuration : OpenDuration;
             
             progressBar.SetBar(CurProgress, MaxProgress);
             if (CurProgress >= MaxProgress)

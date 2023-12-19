@@ -26,4 +26,9 @@ public class CoinCounter : MonoBehaviour
         txt.SetText(": "+gold);
         
     }
+
+    public int GetAmount()
+    {
+        return PlayerPrefs.GetInt("Gold");
+    }
 }

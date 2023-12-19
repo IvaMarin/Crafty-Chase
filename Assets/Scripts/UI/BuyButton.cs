@@ -9,10 +9,16 @@ public class BuyButton : MonoBehaviour
     [SerializeField] private int price = 1;
     [SerializeField] private CoinCounter cc;
 
-
+    [SerializeField] private string abilityName;
+    [SerializeField] private int percent=5;
 
     public void OnBuyClick()
     {
-        cc.ChangeAmount(-price);
+        if (cc.GetAmount() > price)
+        {
+            string key = abilityName + "Coef";
+            PlayerPrefs.SetFloat(key, PlayerPrefs.GetFloat(key) + (float)percent / 100f);
+            cc.ChangeAmount(-price);
+        }
     }
 }

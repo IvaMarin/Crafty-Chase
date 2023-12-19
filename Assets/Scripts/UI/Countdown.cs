@@ -32,7 +32,7 @@ public class Countdown : MonoBehaviour
         DisplayTime(timeRemaining);
         displayTime.overrideColorTags = true;
         displayTime.faceColor = defaultColor;
-        Debug.Log(nextSceneName);
+        // Debug.Log(nextSceneName);
     }
     
     void Update()

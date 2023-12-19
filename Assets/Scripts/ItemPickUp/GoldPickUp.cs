@@ -10,12 +10,12 @@ public class GoldPickUp : MonoBehaviour
     private void Awake()
     {
         gold = PlayerPrefs.GetInt("Gold");
-        Debug.Log("awake gp");
+        // Debug.Log("awake gp");
     }
     
     private void Start() {
-        Debug.Log("gamemanager " + gameManager);
-        Debug.Log("start gold " + gold);
+        // Debug.Log("gamemanager " + gameManager);
+        // Debug.Log("start gold " + gold);
         gameManager.Setup();
         gameManager.ChangeGoldText(gold);
     }

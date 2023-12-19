@@ -13,14 +13,17 @@ public class GameManager : MonoBehaviour
     // private int k = 0;
     private void Start()
     {
+        // Debug.Log("I am gamecontroller");
+        GetComponent<Transform>().parent.gameObject.SetActive(false);
 
         txt = GetComponent<TextMeshProUGUI>();
+        // Debug.Log(txt);
         ChangeGoldText(PlayerPrefs.GetInt("Gold"));
     }
 
     public void Setup()
     {
-        // txt = GetComponent<TextMeshProUGUI>();
+        txt = GetComponent<TextMeshProUGUI>();
     }
     
 
@@ -28,15 +31,15 @@ public class GameManager : MonoBehaviour
     {
         // haha this so evil recursion ^_^
 
-        //if (txt)
-        //{
-        //txt.text = ": " + goldCount;
-        //}
-        //else
-        //{
-        //    Debug.Log("FUCKING NULL");
-        //    txt = GetComponent<TextMeshProUGUI>();
-        //    ChangeGoldText(goldCount);
-        //}
+        if (txt)
+        {
+        txt.text = ": " + goldCount;
+        }
+        else
+        {
+            Debug.Log("FUCKING NULL");
+            txt = GetComponent<TextMeshProUGUI>();
+            txt.text = ": " + goldCount;
+        }
     }
 }

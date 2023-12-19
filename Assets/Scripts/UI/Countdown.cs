@@ -37,19 +37,26 @@ public class Countdown : MonoBehaviour
         if (isTimerStarted == false)
         {
             isTimerStarted = true;
-            StartCoroutine(DoStep(timeRemaining));
+            StartCoroutine(DoStep());
+            Debug.Log("Coroutine ended");
         }
+
+        if (timeRemaining == 0)
+        {
+            SceneManager.LoadScene("SeaPort");
+            // Destroy(gameObject);
+        }
+        // Debug.Log(timeRemaining);
     }
     
-    IEnumerator DoStep (int seconds) {
-        int counter = seconds;
-        DisplayTime(counter);
-        while (counter > 0) {
+    IEnumerator DoStep () {
+        DisplayTime(timeRemaining);
+        while (timeRemaining > 0) {
             yield return new WaitForSeconds (1);
-            counter--;
-            DisplayTime(counter);
+            timeRemaining--;
+            DisplayTime(timeRemaining);
         }
-        SceneManager.LoadScene("SeaPort");
+        // SceneManager.LoadScene("SeaPort");
     }
     
     void DisplayTime(float timeToDisplay)

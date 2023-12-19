@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,16 +12,18 @@ public class CoinCounter : MonoBehaviour
     void Start()
     {
         gold = PlayerPrefs.GetInt("Gold");
+        PlayerPrefs.SetInt("Gold", gold);
         txt = GetComponent<TextMeshProUGUI>();
-        Debug.Log(txt);
-        txt.text = ":" + gold;
-        Debug.Log("gold "+gold);
+        txt.SetText(": "+ gold);
     }
 
-    // Update is called once per frame
+    
+
     public void ChangeAmount(int delta)
     {
-        PlayerPrefs.SetInt("Gold", gold + delta);
-        txt.text = ":" + gold;
+        gold = PlayerPrefs.GetInt("Gold") + delta;
+        PlayerPrefs.SetInt("Gold", gold);
+        txt.SetText(""+gold);
+        
     }
 }

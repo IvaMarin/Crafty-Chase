@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     {
 
         txt = GetComponent<TextMeshProUGUI>();
+        ChangeGoldText(PlayerPrefs.GetInt("Gold"));
     }
 
     public void Setup()
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("FUCKING NULL");
             txt = GetComponent<TextMeshProUGUI>();
             ChangeGoldText(goldCount);
         }

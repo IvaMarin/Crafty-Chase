@@ -68,9 +68,6 @@ public class Player : NetworkBehaviour
     public float zoomFOV = 30f;
     public float zoomStepTime = 5f;
 
-    // Internal Variables
-    private bool isZoomed = false;
-
     #endregion
     #endregion
 

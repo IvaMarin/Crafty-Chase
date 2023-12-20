@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine.EventSystems;
 #endif
 
 [RequireComponent(typeof(Rigidbody))]
@@ -134,7 +135,8 @@ public class FirstPersonController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-
+        walkSpeed = PlayerPrefs.GetFloat("walkSpeed")*PlayerPrefs.GetFloat("walkCoef");
+        jumpPower = PlayerPrefs.GetFloat("jumpPower")*PlayerPrefs.GetFloat("jumpCoef");;
         playerInput = new PlayerInput();
         playerInput.Player.Jump.performed += OnJumpInput;
 
@@ -665,7 +667,8 @@ public class FirstPersonControllerEditor : Editor
         fpc.playerCanMove = EditorGUILayout.ToggleLeft(new GUIContent("Enable Player Movement", "Determines if the player is allowed to move."), fpc.playerCanMove);
 
         GUI.enabled = fpc.playerCanMove;
-        fpc.walkSpeed = EditorGUILayout.Slider(new GUIContent("Walk Speed", "Determines how fast the player will move while walking."), fpc.walkSpeed, .1f, fpc.sprintSpeed);
+        fpc.walkSpeed = EditorGUILayout.Slider(new GUIContent("Walk Speed", "Determines how fast the player will move while walking."), fpc.walkSpeed, .1f, fpc.sprintSpeed+100);
+        
         GUI.enabled = true;
 
         EditorGUILayout.Space();
@@ -782,6 +785,12 @@ public class FirstPersonControllerEditor : Editor
             EditorUtility.SetDirty(fpc);
             Undo.RecordObject(fpc, "FPC Change");
             SerFPC.ApplyModifiedProperties();
+            // Debug.Log(fpc.walkSpeed);
+            // Debug.Log(fpc.jumpPower);
+            // Debug.Log(fpc.sprintSpeed);
+            PlayerPrefs.SetFloat("sprintSpeed", fpc.sprintSpeed);
+            PlayerPrefs.SetFloat("walkSpeed", fpc.walkSpeed);
+            PlayerPrefs.SetFloat("jumpPower", fpc.jumpPower);
         }
     }
 

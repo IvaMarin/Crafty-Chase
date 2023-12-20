@@ -12,7 +12,7 @@ public class ProgressBar : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void SetBar(int cur, int max)
+    public void SetBar(float cur, float max)
     {
         Vector3 direction = new Vector3(1, 0, 0);
         Vector3 default_ = new Vector3(0, 1, 1);

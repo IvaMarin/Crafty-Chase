@@ -17,6 +17,7 @@ public class BuyButton : MonoBehaviour
         if (cc.GetAmount() > price)
         {
             string key = abilityName + "Coef";
+            Debug.Log(key); 
             PlayerPrefs.SetFloat(key, PlayerPrefs.GetFloat(key) *(1f + (float)percent / 100f));
             cc.ChangeAmount(-price);
         }

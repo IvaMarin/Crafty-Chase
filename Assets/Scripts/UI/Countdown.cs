@@ -23,6 +23,7 @@ public class Countdown : MonoBehaviour
     private Color stressColor;
     private void Start()    
     {
+        Debug.Log(gameObject);
         displayTime = GetComponent<Transform>().GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
 
         stressColor = new Color(255, 89, 86);

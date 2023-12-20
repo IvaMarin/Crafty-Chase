@@ -36,11 +36,11 @@ public class Ghost : MonoBehaviour
     }
 	
 	void OnTriggerEnter(Collider col) {
-		Debug.Log(col.gameObject.tag);
 		
 		if (col.gameObject.tag == "Player") {		
 			Cursor.lockState = CursorLockMode.None;
 			SceneManager.LoadScene(nextSceneName.ToString());
+			PlayerPrefs.SetInt("Gold", 0);
 		}
 	}
     

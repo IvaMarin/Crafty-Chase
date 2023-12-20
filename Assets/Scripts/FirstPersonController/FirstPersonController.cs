@@ -134,9 +134,25 @@ public class FirstPersonController : MonoBehaviour
 
     private void Awake()
     {
+
         rb = GetComponent<Rigidbody>();
-        walkSpeed = PlayerPrefs.GetFloat("walkSpeed")*PlayerPrefs.GetFloat("walkCoef");
-        jumpPower = PlayerPrefs.GetFloat("jumpPower")*PlayerPrefs.GetFloat("jumpCoef");;
+        if (PlayerPrefs.HasKey("jumpCoef"))
+        {
+            walkSpeed = PlayerPrefs.GetFloat("walkSpeed") * PlayerPrefs.GetFloat("walkCoef");
+            jumpPower = PlayerPrefs.GetFloat("jumpPower") * PlayerPrefs.GetFloat("jumpCoef"); ;
+        }
+        else
+        {
+            walkSpeed = 5;
+            jumpPower = 5;
+            PlayerPrefs.SetFloat("walkSpeed", walkSpeed);
+            PlayerPrefs.SetFloat("jumpPower", jumpPower);
+            PlayerPrefs.SetFloat("walkCoef", 1f);
+            PlayerPrefs.SetFloat("jumpCoef", 1f);
+            PlayerPrefs.SetFloat("openCoef", 10f);
+            PlayerPrefs.SetInt("Gold", 500);
+
+        }
         playerInput = new PlayerInput();
         playerInput.Player.Jump.performed += OnJumpInput;
 
